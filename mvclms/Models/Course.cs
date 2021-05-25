@@ -15,7 +15,7 @@ namespace mvclms.Models
         public string TeacherId { get; set; }
         public Teacher Teacher { get; set; }
         
-        public List<Course> Students { get; set; } = new();
+        public List<Student> Students { get; set; } = new();
         
     }
 }
