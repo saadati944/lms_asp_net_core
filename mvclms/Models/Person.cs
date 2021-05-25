@@ -8,6 +8,7 @@ namespace mvclms.Models
     public abstract class Person : IdentityUser
     {
         [StringLength(150)]
+        [Key]
         public override string Id { get; set; }
         
         [StringLength(100)]
