@@ -57,5 +57,16 @@ namespace mvclms.Services
         {
             return _userManager.GetUserAsync(ClaimsPrincipal.Current).GetAwaiter().GetResult();
         }
+
+        public void CheckoutCourse(Course c, Person user = null)
+        {
+            user ??= GetUser();
+            
+            user.Courses.Add(c);
+            StudentCourse sc = new StudentCourse {Course = c, Student = user};
+            c.StudentCourses.Add(sc);
+            _dbContext.StudentCourses.Add(sc);
+            _dbContext.SaveChanges();
+        }
     }
 }

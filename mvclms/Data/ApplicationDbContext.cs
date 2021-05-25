@@ -50,5 +50,6 @@ namespace mvclms.Data
         public DbSet<Person> Users { get; set; }
         public DbSet<File> Files { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<StudentCourse> StudentCourses { get; set; }
     }
 }
