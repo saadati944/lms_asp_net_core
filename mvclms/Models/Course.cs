@@ -17,9 +17,9 @@ namespace mvclms.Models
         public List<File> Files { get; set; } = new();
 
         public string TeacherId { get; set; }
-        public Teacher Teacher { get; set; }
+        public Person Teacher { get; set; }
         
-        public List<Student> Students { get; set; } = new();
+        public List<StudentCourse> StudentCourses { get; set; } = new();
         
     }
 }

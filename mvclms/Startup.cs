@@ -12,6 +12,7 @@ using mvclms.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using mvclms.Models;
 
 namespace mvclms
 {
@@ -32,9 +33,15 @@ namespace mvclms
                     Configuration.GetConnectionString("dockersql")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            // services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = false)
+            //     .AddEntityFrameworkStores<ApplicationDbContext>();
+            
+            // services.AddIdentity<Person, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+            //     .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<Person, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            
             services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
