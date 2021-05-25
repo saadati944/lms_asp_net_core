@@ -1,0 +1,10 @@
+uploads/
+Migrations/
+.idea/
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+wwwroot/
+*.db
