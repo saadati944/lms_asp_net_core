@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using mvclms.Data;
@@ -6,7 +7,7 @@ using mvclms.ViewModels;
 
 namespace mvclms.Services
 {
-    public class UserManager
+    public class UserManager : IUserManager
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Person> _userManager;
@@ -31,32 +32,30 @@ namespace mvclms.Services
                 FirstName = person.FirstName,
                 LastName = person.LastName
             };
-            Task<IdentityResult> createRes =  _userManager.CreateAsync(p, person.Password);
-            createRes.Wait();
-            return createRes.Result.Succeeded && AddToRole(p, person.PersonMode);
+            return _userManager.CreateAsync(p, person.Password).GetAwaiter().GetResult().Succeeded && AddToRole(p, person.PersonMode);
         }
         
         public bool AddToRole(Person person, string role)
         {
-            Task<bool> res = _roleManager.RoleExistsAsync(role);
-            res.Wait();
-            if (!res.Result)
+            if (!_roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
                 _roleManager.CreateAsync(new IdentityRole{Name = role}).Wait();
-            var x = _userManager.AddToRoleAsync(person, role);
-            x.Wait();
-            return x.Result.Succeeded;
+            return _userManager.AddToRoleAsync(person, role).GetAwaiter().GetResult().Succeeded;
         }
 
         public bool Login(LoginViewModel login)
         {
-            var result = _signInManager.PasswordSignInAsync(login.Username, login.Password, login.RememberMe, false);
-            result.Wait();
-            return result.Result.Succeeded;
+            return _signInManager.PasswordSignInAsync(login.Username, login.Password, login.RememberMe, false)
+                .GetAwaiter().GetResult().Succeeded;
         }
 
         public void Logout()
         {
             _signInManager.SignOutAsync().Wait();
+        }
+
+        public Person GetUser()
+        {
+            return _userManager.GetUserAsync(ClaimsPrincipal.Current).GetAwaiter().GetResult();
         }
     }
 }
