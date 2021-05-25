@@ -9,6 +9,10 @@ namespace mvclms.Models
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public int Price { get; set; }
+        
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
 
         public List<File> Files { get; set; } = new();
 
