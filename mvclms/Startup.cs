@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using mvclms.Models;
+using mvclms.Services;
 
 namespace mvclms
 {
@@ -42,6 +43,9 @@ namespace mvclms
             
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<IUserManager>();
+            services.AddTransient<ICourseManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

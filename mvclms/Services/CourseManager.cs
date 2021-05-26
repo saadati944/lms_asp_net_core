@@ -11,7 +11,7 @@ using File = System.IO.File;
 
 namespace mvclms.Services
 {
-    public class CourseManager
+    public class CourseManager : ICourseManager
     {
         private const string UploadPath = "uploads";
         private readonly ApplicationDbContext _dbContext;
