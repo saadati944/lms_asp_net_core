@@ -14,6 +14,7 @@ namespace mvclms.Models
         [StringLength(100)]
         public override string UserName { get; set; }
         
+        // this field is only for teachers
         public List<Course> Courses { get; set; } = new();
         public List<StudentCourse> StudentCourses { get; set; } = new();
 
