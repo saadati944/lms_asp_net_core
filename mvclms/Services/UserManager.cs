@@ -37,8 +37,12 @@ namespace mvclms.Services
             };
             
             var result = _userManager.CreateAsync(p, person.Password).GetAwaiter().GetResult();
+            if (!result.Succeeded)
+                return result;
 
-            AddToRole(p, person.PersonMode);
+            // todo: this line throws error !!!
+            // check it and fix the error later
+            // AddToRole(p, person.PersonMode);
 
             return result;
         }

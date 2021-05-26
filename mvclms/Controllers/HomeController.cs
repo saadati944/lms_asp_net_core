@@ -27,12 +27,12 @@ namespace mvclms.Controllers
 
         public async Task<IActionResult> Index()
         {
-            bool e1 = await _roleManager.RoleExistsAsync("admin");
-            IdentityRole ir = new IdentityRole {Name = "admin"};
-            if (!e1) await _roleManager.CreateAsync(ir);
-            bool e2 = await _roleManager.RoleExistsAsync("admin");
-            ViewBag.e1 = e1;
-            ViewBag.e2 = e2;
+            // bool e1 = await _roleManager.RoleExistsAsync("admin");
+            // IdentityRole ir = new IdentityRole {Name = "admin"};
+            // if (!e1) await _roleManager.CreateAsync(ir);
+            // bool e2 = await _roleManager.RoleExistsAsync("admin");
+            // ViewBag.e1 = e1;
+            // ViewBag.e2 = e2;
             return View();
         }
 
