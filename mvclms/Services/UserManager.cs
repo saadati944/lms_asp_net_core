@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using mvclms.Data;
 using mvclms.Models;
 using mvclms.ViewModels;
@@ -13,6 +15,7 @@ namespace mvclms.Services
         private readonly UserManager<Person> _userManager;
         private readonly SignInManager<Person> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private Person _user;
         
         public UserManager(ApplicationDbContext dbContext, UserManager<Person> userManager,
             SignInManager<Person> signInManager, RoleManager<IdentityRole> roleManager)
@@ -24,7 +27,7 @@ namespace mvclms.Services
         }
 
 
-        public bool CreateUser(PersonViewModel person)
+        public IdentityResult CreateUser(PersonViewModel person)
         {
             Person p = new Person
             {
@@ -32,7 +35,12 @@ namespace mvclms.Services
                 FirstName = person.FirstName,
                 LastName = person.LastName
             };
-            return _userManager.CreateAsync(p, person.Password).GetAwaiter().GetResult().Succeeded && AddToRole(p, person.PersonMode);
+            
+            var result = _userManager.CreateAsync(p, person.Password).GetAwaiter().GetResult();
+
+            AddToRole(p, person.PersonMode);
+
+            return result;
         }
         
         public bool AddToRole(Person person, string role)
@@ -55,9 +63,18 @@ namespace mvclms.Services
 
         public Person GetUser()
         {
-            return _userManager.GetUserAsync(ClaimsPrincipal.Current).GetAwaiter().GetResult();
+            if(_user is null)
+                _user = _userManager.GetUserAsync(ClaimsPrincipal.Current).GetAwaiter().GetResult();
+
+            return _user;
         }
 
+        public Person GetUser(string id)
+        {
+            // todo : add includes according to method inputs
+            return _dbContext.Users.FirstOrDefault(x => x.Id == id);
+        }
+        
         public void CheckoutCourse(Course c, Person user = null)
         {
             user ??= GetUser();

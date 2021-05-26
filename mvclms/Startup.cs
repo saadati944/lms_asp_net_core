@@ -44,8 +44,8 @@ namespace mvclms
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddScoped<IUserManager>();
-            services.AddTransient<ICourseManager>();
+            services.AddScoped<UserManager>();
+            services.AddTransient<CourseManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
