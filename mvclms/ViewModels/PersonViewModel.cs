@@ -6,7 +6,7 @@ using mvclms.Models;
 
 namespace mvclms.ViewModels
 {
-    public abstract class PersonViewModel
+    public class PersonViewModel
     {
         [Required]
         [DisplayName("User Name")]   
@@ -37,7 +37,7 @@ namespace mvclms.ViewModels
         
         public string PersonMode { get; set; }
 
-        public List<SelectListItem> PersonModes { get; set; } = new List<SelectListItem>
+        public static List<SelectListItem> PersonModes { get; set; } = new List<SelectListItem>
             {new SelectListItem("Teacher", "Teacher"), new SelectListItem("Student", "Student")};
     }
 }
