@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using mvclms.Models;
+using mvclms.Data;
 using mvclms.Services;
 using mvclms.ViewModels;
 
@@ -9,23 +8,27 @@ namespace mvclms.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly UserManager _userManager;
+        private readonly MyUserManager _myUserManager;
+        private readonly ApplicationDbContext _dbContext;
 
-        public UsersController(UserManager userManager)
+        public UsersController(MyUserManager myUserManager, ApplicationDbContext dbContext)
         {
-            _userManager = userManager;
+            _myUserManager = myUserManager;
+            _dbContext = dbContext;
         }
 
 
         public IActionResult Logout()
         {
-            _userManager.Logout();
+            _myUserManager.Logout();
             return View();
         }
 
         [HttpGet]
-        public IActionResult SignUp()
+        public IActionResult SignUp(int? temp)
         {
+            if(temp is not null)
+                return Ok(_dbContext.Users.ToList());
             return View();
         }
 
@@ -35,7 +38,7 @@ namespace mvclms.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = _userManager.CreateUser(person);
+            var result = _myUserManager.CreateUser(person);
             
             if (!result.Succeeded)
             {
@@ -47,20 +50,31 @@ namespace mvclms.Controllers
             return RedirectToAction("Login", "Users");
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
-            return null;
+            return View();
         }
 
-        [Authorize(Roles = "Teacher,Student")]
+        [HttpPost]
+        public IActionResult Login(LoginViewModel logindata)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            
+            _myUserManager.Login(logindata);
+
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Profile()
         {
-            return View(_userManager.GetUser());
+            return View(_myUserManager.GetUser());
         }
 
         public IActionResult Profile(string id)
         {
-            return View(_userManager.GetUser(id));
+            return View(_myUserManager.GetUser(id));
         }
     }
 }

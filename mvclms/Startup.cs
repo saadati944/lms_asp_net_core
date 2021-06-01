@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using mvclms.Data;
 using Microsoft.Extensions.Configuration;
@@ -34,17 +27,17 @@ namespace mvclms
                     Configuration.GetConnectionString("dockersql")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            // services.AddDefaultIdentity<Person>(options => options.SignIn.RequireConfirmedAccount = false)
-            //     .AddEntityFrameworkStores<ApplicationDbContext>();
+            //todo: use roles ...    you can do that
+            //services.AddIdentity<Person, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
             
-            // services.AddIdentity<Person, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-            //     .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddIdentity<Person, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<Person>()
+                //.AddDefaultUI(UIFramework.Bootstrap4)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
             
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddScoped<UserManager>();
+            services.AddScoped<MyUserManager>();
             services.AddTransient<CourseManager>();
         }
 
