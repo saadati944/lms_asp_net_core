@@ -7,11 +7,6 @@ using mvclms.Data;
 using mvclms.Models;
 using mvclms.ViewModels;
 
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
 namespace mvclms.Services
 {
     public class MyUserManager : IUserManager

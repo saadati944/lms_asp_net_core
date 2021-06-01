@@ -44,7 +44,7 @@ namespace mvclms.Services
 
         public Lecture GetLecture(int lecId)
         {
-            return _dbContext.Lectures.Where(x => x.Id == lecId).Include(x => x.Attachment).Include(x => x.Course)
+            return _dbContext.Lectures.Where(x => x.Id == lecId).Include(x => x.Attachment).Include(x => x.Course).ThenInclude(x=>x.Teacher)
                 .FirstOrDefault();
         }
 
