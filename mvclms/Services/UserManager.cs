@@ -11,19 +11,18 @@ namespace mvclms.Services
 {
     public class UserManager : IUserManager
     {
+        //todo : use role manager instead of isteacher in person model
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Person> _userManager;
         private readonly SignInManager<Person> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private Person _user;
         
         public UserManager(ApplicationDbContext dbContext, UserManager<Person> userManager,
-            SignInManager<Person> signInManager, RoleManager<IdentityRole> roleManager)
+            SignInManager<Person> signInManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
         }
 
 
@@ -33,13 +32,15 @@ namespace mvclms.Services
             {
                 UserName = person.UserName,
                 FirstName = person.FirstName,
-                LastName = person.LastName
+                LastName = person.LastName,
+                IsTeacher = person.PersonMode == PersonViewModel.PersonModes[0].Text //teacher // todo: fix this ...
             };
             
             var result = _userManager.CreateAsync(p, person.Password).GetAwaiter().GetResult();
             if (!result.Succeeded)
                 return result;
 
+            // fix
             // todo: this line throws error !!!
             // check it and fix the error later
             // AddToRole(p, person.PersonMode);
@@ -47,12 +48,12 @@ namespace mvclms.Services
             return result;
         }
         
-        public bool AddToRole(Person person, string role)
-        {
-            if (!_roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
-                _roleManager.CreateAsync(new IdentityRole{Name = role}).Wait();
-            return _userManager.AddToRoleAsync(person, role).GetAwaiter().GetResult().Succeeded;
-        }
+        // public bool AddToRole(Person person, string role)
+        // {
+        //     if (!_roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
+        //         _roleManager.CreateAsync(new IdentityRole{Name = role}).Wait();
+        //     return _userManager.AddToRoleAsync(person, role).GetAwaiter().GetResult().Succeeded;
+        // }
 
         public bool Login(LoginViewModel login)
         {
