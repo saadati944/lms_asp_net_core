@@ -26,5 +26,7 @@ namespace mvclms.Models
 
         [Display(Name = "Full Name")]
         public string FullName => FirstName + ", " + LastName;
+        
+        public bool IsTeacher { get; set; }
     }
 }

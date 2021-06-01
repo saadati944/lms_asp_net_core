@@ -32,7 +32,7 @@ namespace mvclms.Data
             
             modelBuilder.Entity<Course>()
                 .HasOne(bc => bc.Category)
-                .WithMany(b => b.courses)
+                .WithMany(b => b.Courses)
                 .HasForeignKey(bc => bc.CategoryId);
 
             modelBuilder.Entity<StudentCourse>()
