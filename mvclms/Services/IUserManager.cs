@@ -10,7 +10,7 @@ namespace mvclms.Services
         //bool AddToRole(Person person, string role);
         bool Login(LoginViewModel login);
         void Logout();
-        Person GetUser();
+        Person GetUser(System.Security.Claims.ClaimsPrincipal x);
         Person GetUser(string id);
     }
 }

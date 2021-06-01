@@ -1,10 +1,16 @@
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using mvclms.Data;
 using mvclms.Models;
 using mvclms.ViewModels;
+
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace mvclms.Services
 {
@@ -69,10 +75,10 @@ namespace mvclms.Services
             _signInManager.SignOutAsync().Wait();
         }
 
-        public Person GetUser()
+        public Person GetUser(ClaimsPrincipal claimsPrincipal)
         {
             if(_user is null)
-                _user = _userManager.GetUserAsync(ClaimsPrincipal.Current).GetAwaiter().GetResult();
+                _user = _userManager.GetUserAsync(claimsPrincipal).GetAwaiter().GetResult();
 
             return _user;
         }
@@ -83,9 +89,9 @@ namespace mvclms.Services
             return _dbContext.Users.FirstOrDefault(x => x.Id == id);
         }
         
-        public void CheckoutCourse(Course c, Person user = null)
+        public void CheckoutCourse(ClaimsPrincipal claimsPrincipal, Course c, Person user = null)
         {
-            user ??= GetUser();
+            user ??= GetUser(claimsPrincipal);
             
             user.Courses.Add(c);
             StudentCourse sc = new StudentCourse {Course = c, Student = user};

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using mvclms.Data;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using mvclms.Models;
 using mvclms.Services;
+
 
 namespace mvclms
 {
@@ -29,7 +31,7 @@ namespace mvclms
 
             //todo: use roles ...    you can do that
             //services.AddIdentity<Person, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-            
+
             services.AddDefaultIdentity<Person>()
                 //.AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();

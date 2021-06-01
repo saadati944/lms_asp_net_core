@@ -5,4 +5,24 @@
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<div class="container">
+    <dl>
+        <dt>Username :</dt>
+        <dd>@Model.UserName</dd> 
+        <dt>Full name :</dt>
+        <dd>@Model.FullName</dd>
+        <dt>User Mode :</dt>
+        @if (Model.IsTeacher)
+        {
+            <dd>Teacher</dd>
+            <dt>Created courses count :</dt>
+            <dd>@Model.Courses.Count</dd>
+        }
+        else
+        {
+            <dd>Student</dd>
+            <dt>Checked out courses count :</dt>
+            <dd>@Model.Courses.Count</dd>
+        }
+    </dl>
+</div>

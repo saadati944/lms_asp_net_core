@@ -1,6 +1,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using mvclms.Data;
+using mvclms.Models;
 using mvclms.Services;
 using mvclms.ViewModels;
 
@@ -67,14 +68,15 @@ namespace mvclms.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Profile()
+        public IActionResult Profile(string? id)
         {
-            return View(_myUserManager.GetUser());
-        }
-
-        public IActionResult Profile(string id)
-        {
-            return View(_myUserManager.GetUser(id));
+            Person p;
+            if (id is null)
+                p = _myUserManager.GetUser(User);
+            else
+                p = _myUserManager.GetUser(id);
+            
+            return View(p);
         }
     }
 }
