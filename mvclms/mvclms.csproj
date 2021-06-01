@@ -25,6 +25,8 @@
 
     <ItemGroup>
       <Folder Include="Data" />
+      <Folder Include="Pages" />
+      <Folder Include="wwwroot\uploads" />
     </ItemGroup>
 
 </Project>

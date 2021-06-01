@@ -1,0 +1,15 @@
+@model Lecture
+
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <h1>@Model.Title</h1>
+    <div>@Model.Content</div>
+    
+    <a href="../../@Model.Attachment.Path">@Model.Attachment.Description</a>
+    <p>Author : @Model.Course.Teacher.FullName</p>
+    <a asp-controller="Course" asp-action="ShowCourse" asp-route-id="@Model.Course.Id">Course</a>
+</div>

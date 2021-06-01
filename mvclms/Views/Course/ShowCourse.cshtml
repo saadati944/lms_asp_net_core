@@ -1,0 +1,31 @@
+@model mvclms.Models.Course
+
+@{
+    ViewBag.Title = Model.Name;
+    Layout = "_Layout";
+    int i = 0;
+}
+
+<div class="container text-left">
+    <h1 class="text-center">@Model.Name</h1>
+    <p>@Model.Description</p>
+    
+    <dl>
+        <dt>Start Date :</dt>
+        <dd>@($"{Model.StartDate.ToLongDateString()}  {Model.StartDate.ToLongTimeString()}")</dd>
+        <dt>End Date :</dt>
+        <dd>@($"{Model.EndDate.ToLongDateString()}  {Model.EndDate.ToLongTimeString()}")</dd>
+        <dt>Teacher :</dt>
+        <dd>@Model.Teacher.FullName</dd>
+        <dt>Students count :</dt>
+        <dd>@Model.StudentCourses.Count</dd>
+    </dl>
+    
+    <div>
+        @foreach(var x in Model.Lectures)
+        {
+            <a asp-controller="Course" asp-action="ShowLecture" asp-route-id="@x.Id">@x.Title</a>
+            <hr>
+        }
+    </div>
+</div>
