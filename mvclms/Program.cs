@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using mvclms.Data;
+using mvclms.Services;
 
 namespace mvclms
 {
@@ -34,8 +35,9 @@ namespace mvclms
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
+                    var usermanager = services.GetRequiredService<MyUserManager>();
 
-                    DbInitializer.Initialize(context, services);
+                    DbInitializer.Initialize(context, usermanager, services);
                 }
                 catch (Exception ex)
                 {

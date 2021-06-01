@@ -78,11 +78,14 @@ namespace mvclms.Services
             return _user;
         }
 
-        public Person GetUser(string id)
+        public Person GetUser(string id, bool findWithUsername = false)
         {
             // todo : add includes according to method inputs
+            if(findWithUsername)
+                return _dbContext.Users.FirstOrDefault(x => x.UserName == id);
             return _dbContext.Users.FirstOrDefault(x => x.Id == id);
         }
+        
         
         public void CheckoutCourse(ClaimsPrincipal claimsPrincipal, Course c, Person user = null)
         {
