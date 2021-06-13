@@ -48,7 +48,7 @@ namespace mvclms.Services
                 .FirstOrDefault();
         }
 
-        public void CreateCourse(CourseViewModel course, Person teacher)
+        public int CreateCourse(CourseViewModel course, Person teacher)
         {
             Course c = new Course
             {
@@ -63,6 +63,7 @@ namespace mvclms.Services
 
             _dbContext.Add(c);
             _dbContext.SaveChanges();
+            return c.Id;
         }
 
         private Category GetCategory(string cat)
@@ -76,12 +77,12 @@ namespace mvclms.Services
             return c;
         }
 
-        public void CreateLecture(LectureViewModel lecture, int CourseId)
+        public int CreateLecture(LectureViewModel lecture, int CourseId)
         {
-            CreateLecture(lecture, GetCourse(CourseId));
+            return CreateLecture(lecture, GetCourse(CourseId));
         }
 
-        public void CreateLecture(LectureViewModel lecture, Course course)
+        public int CreateLecture(LectureViewModel lecture, Course course)
         {
             Lecture l = new Lecture
             {
@@ -91,6 +92,7 @@ namespace mvclms.Services
             };
             _dbContext.Add(l);
             _dbContext.SaveChanges();
+            return l.Id;
         }
 
         public void UpdateLecture(LectureViewModel updatedlecture, Lecture lecture)

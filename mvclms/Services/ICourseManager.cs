@@ -11,9 +11,9 @@ namespace mvclms.Services
         Course GetCourse(int id);
         List<Lecture> GetLectures(Course course);
         Lecture GetLecture(int lecId);
-        void CreateCourse(CourseViewModel course, Person teacher);
-        void CreateLecture(LectureViewModel lecture, int CourseId);
-        void CreateLecture(LectureViewModel lecture, Course course);
+        int CreateCourse(CourseViewModel course, Person teacher);
+        int CreateLecture(LectureViewModel lecture, int CourseId);
+        int CreateLecture(LectureViewModel lecture, Course course);
         void UpdateLecture(LectureViewModel updatedlecture, Lecture lecture);
 
         /// <summary>
