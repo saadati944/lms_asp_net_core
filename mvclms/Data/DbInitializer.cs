@@ -49,7 +49,7 @@ namespace mvclms.Data
                     Content = "lecture content ...",
                     Attachment = new File
                     {
-                        Path = "pic1.png",
+                        Path = "uploads/pic1.png",
                         Description = "temp picture file ..."
                     }
                 },
@@ -59,7 +59,7 @@ namespace mvclms.Data
                     Content = "lecture content2 ...",
                     Attachment = new File
                     {
-                        Path = "pic2.png",
+                        Path = "uploads/pic2.png",
                         Description = "temp picture file2 ..."
                     }
                 }
@@ -82,16 +82,18 @@ namespace mvclms.Data
                 }
             );
 
+
+            usermanager.CreateUser(new PersonViewModel
+            {
+                FirstName = "u2_firstname",
+                LastName = "u2_lastname",
+                Password = "!2Qwerty",
+                ConfirmPassword = "!2Qwerty",
+                PersonMode = "Student",
+                UserName = "user2"
+            });
+            
             context.SaveChanges();
-            // var person = new Person
-            // {
-            //     FirstName = "Johan",
-            //     LastName = "Vergeer",
-            //     Age = 32
-            // };
-            //
-            // context.People.Add(person);
-            // context.SaveChanges();
 
             logger.LogInformation("Finished seeding the database.");
         }

@@ -1,0 +1,28 @@
+@model mvclms.ViewModels.CheckoutCourseViewModel
+
+@{
+    ViewBag.Title = "checkout course";
+    Layout = "_Layout";
+}
+
+<div class="container text-left">
+    <h1>Checkout course</h1>
+    <h3>Course Name:</h3>
+    <p>@ViewBag.model.Name</p>
+    <h3>Course Description:</h3>
+    <p>@ViewBag.model.Description</p>
+    <h3>Course Start date:</h3>
+    <p>@ViewBag.model.StartDate.ToLongDateString()  @ViewBag.model.StartDate.ToLongTimeString()</p>
+    <h3>Course end date:</h3>
+    <p>@ViewBag.model.EndDate.ToLongDateString()  @ViewBag.model.EndDate.ToLongTimeString()</p>
+    <h3>Course Price:</h3>
+    <p>@ViewBag.model.Price $</p>
+    
+    <form asp-controller="Course" asp-action="CheckoutCourse">
+        <input asp-for="Sure">
+        <input asp-for="CourseId">
+        
+        <a class="btn btn-primary" asp-controller="Course" asp-action="ShowCourse" asp-route-id="@Model.CourseId">cancel</a>
+        <input type="submit" class="btn btn-warning" value="Checkout" />
+    </form>
+</div>
