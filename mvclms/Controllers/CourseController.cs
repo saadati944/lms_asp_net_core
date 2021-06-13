@@ -23,5 +23,24 @@ namespace mvclms.Controllers
         {
             return View(_courseManager.GetLecture(id));
         }
+
+        [HttpGet]
+        public IActionResult CreateCourse()
+        {
+            var user = _userManager.GetUser(User); 
+            if (user is null || !user.IsTeacher)
+                return Ok("You don't have permissions to create course !!!");
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateCourse(ViewModels.CourseViewModel course)
+        {
+            var user = _userManager.GetUser(User); 
+            if (user is null || !user.IsTeacher)
+                return Ok("You don't have permissions to create course !!!");
+            int id = _courseManager.CreateCourse(course, user);
+            return RedirectToAction("ShowCourse", "Course", new {id = id});
+        }
     }
 }

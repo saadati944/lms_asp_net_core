@@ -1,0 +1,83 @@
+@model mvclms.ViewModels.CourseViewModel
+
+@{
+    ViewBag.Title = "new course";
+    Layout = "_Layout";
+}
+
+
+<div class="text-left container">
+    <h1 class="display-4">Create new course</h1>
+    <br>
+    @* TODO: remove multipart/form-data if not uploading file *@
+    <form asp-controller="Course" asp-action="CreateCourse" enctype="multipart/form-data"> 
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control"/>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        @* <div class="form-group"> *@
+        @*     <label asp-for="Description"></label> *@
+        @*     @Html.TextArea("Description", "", new { @class = "form-control", @id = "editor"}) *@
+        @*     <span asp-validation-for="Description" class="text-danger"></span> *@
+        @* </div> *@
+        <div class="form-group">
+            <label asp-for="Category"></label>
+            <input asp-for="Category" id="txtCategory" class="form-control"/>
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StartDate"></label>
+            <input asp-for="StartDate" class="form-control"/>
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="EndDate"></label>
+            <input asp-for="EndDate" class="form-control"/>
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>
+
+
+@* <script src="~/js/ckeditor.js"></script> *@
+@* <script> *@
+@*     ClassicEditor *@
+@*         .create( document.querySelector( '#editor' ) ) *@
+@*         .catch( error => { *@
+@*             console.error( error ); *@
+@*         } ); *@
+@*     $(function () { *@
+@*         $("#txtCategory").autocomplete({ *@
+@*             source: function (request, response) { *@
+@*                 $.ajax({ *@
+@*                     url: '../../api/AutoComplete/', *@
+@*                     data: "prefix="+request.term, *@
+@*                     type: "GET", *@
+@*                     success: function (data) { *@
+@*                         response($.map(data, function (item) { *@
+@*                             return item; *@
+@*                         })) *@
+@*                     }, *@
+@*                     error: function (response) { *@
+@*                         alert(response.responseText); *@
+@*                     }, *@
+@*                     failure: function (response) { *@
+@*                         alert(response.responseText); *@
+@*                     } *@
+@*                 }); *@
+@*             }, *@
+@*             select: function (e, i) { *@
+@*                 $("#hfCustomer").val(i.item.val); *@
+@*             }, *@
+@*             minLength: 1 *@
+@*         }); *@
+@*     }); *@
+@* </script> *@
