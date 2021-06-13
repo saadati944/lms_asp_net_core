@@ -1,5 +1,8 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using mvclms.Services;
+using mvclms.ViewModels;
 
 namespace mvclms.Controllers
 {
@@ -41,6 +44,27 @@ namespace mvclms.Controllers
                 return Ok("You don't have permissions to create course !!!");
             int id = _courseManager.CreateCourse(course, user);
             return RedirectToAction("ShowCourse", "Course", new {id = id});
+        }
+
+        [HttpGet]
+        public IActionResult CreateLecture()
+        {
+            var user = _userManager.GetUser(User); 
+            if (user is null || !user.IsTeacher)
+                return Ok("You don't have permissions to create course !!!");
+            ViewModels.LectureViewModel lvm = new LectureViewModel();
+            lvm.Courses = _courseManager.GetUserCourseNames(user.Id)
+                .Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
+            return View(lvm);
+        }
+        [HttpPost]
+        public IActionResult CreateLecture(ViewModels.LectureViewModel lecture)
+        {
+            var user = _userManager.GetUser(User); 
+            if (user is null || !user.IsTeacher)
+                return Ok("You don't have permissions to create course !!!");
+            int id = _courseManager.CreateLecture(lecture);
+            return RedirectToAction("ShowLecture", "Course", new {id = id});
         }
     }
 }

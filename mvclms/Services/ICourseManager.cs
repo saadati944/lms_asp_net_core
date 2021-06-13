@@ -8,11 +8,12 @@ namespace mvclms.Services
     public interface ICourseManager
     {
         List<Course> GetCourses(int skip = 0, int count = 10, bool includes = false);
+        List<Course> GetUserCourseNames(string userid);
         Course GetCourse(int id);
         List<Lecture> GetLectures(Course course);
         Lecture GetLecture(int lecId);
         int CreateCourse(CourseViewModel course, Person teacher);
-        int CreateLecture(LectureViewModel lecture, int CourseId);
+        int CreateLecture(LectureViewModel lecture);
         int CreateLecture(LectureViewModel lecture, Course course);
         void UpdateLecture(LectureViewModel updatedlecture, Lecture lecture);
 

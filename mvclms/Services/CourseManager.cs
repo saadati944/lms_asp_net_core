@@ -30,6 +30,11 @@ namespace mvclms.Services
             return _dbContext.Courses.Skip(skip).Take(count).ToList();
         }
 
+        public List<Course> GetUserCourseNames(string userid)
+        {
+            return _dbContext.Courses.Where(x=>x.TeacherId == userid).ToList();
+        }
+
         public Course GetCourse(int id)
         {
             return _dbContext.Courses.Where(x => x.Id == id).Include(x => x.Lectures).ThenInclude(x => x.Attachment)
@@ -77,15 +82,16 @@ namespace mvclms.Services
             return c;
         }
 
-        public int CreateLecture(LectureViewModel lecture, int CourseId)
+        public int CreateLecture(LectureViewModel lecture)
         {
-            return CreateLecture(lecture, GetCourse(CourseId));
+            return CreateLecture(lecture, GetCourse(int.Parse(lecture.Course)));
         }
 
         public int CreateLecture(LectureViewModel lecture, Course course)
         {
             Lecture l = new Lecture
             {
+                Title = lecture.Title,
                 Content = lecture.Content,
                 Course = course,
                 Attachment = new Models.File {Description = lecture.AttachmentDesc, Path = SaveFile(lecture.Attachment)}
