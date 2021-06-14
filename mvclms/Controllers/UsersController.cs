@@ -72,7 +72,7 @@ namespace mvclms.Controllers
         {
             Person p;
             if (id is null)
-                p = _myUserManager.GetUser(User);
+                p = _myUserManager.GetUser(_myUserManager.GetUser(User).Id);
             else
                 p = _myUserManager.GetUser(id);
             

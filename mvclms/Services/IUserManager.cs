@@ -11,6 +11,7 @@ namespace mvclms.Services
         bool Login(LoginViewModel login);
         void Logout();
         Person GetUser(System.Security.Claims.ClaimsPrincipal x);
-        Person GetUser(string id, bool findWithUsername = false);
+        Person GetUser(string id);
+        public Person GetUserByUsername(string username);
     }
 }

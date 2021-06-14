@@ -40,7 +40,7 @@ namespace mvclms.Data
                 UserName = "user1"
             });
 
-            var teacher = usermanager.GetUser("user1", true);
+            var teacher = usermanager.GetUserByUsername("user1");
             Lecture[] lectures = new[]
             {
                 new Lecture

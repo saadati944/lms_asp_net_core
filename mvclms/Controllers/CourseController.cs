@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using mvclms.Services;
@@ -15,15 +17,24 @@ namespace mvclms.Controllers
         {
             _courseManager = courseManager;
             _userManager = userManager;
+            ViewBag.navbar = new List<NavbarButton>();
+            
+        }
+
+        private void addUserNavbar()
+        {
+            _userManager.AddNavigationBarButtons(ViewBag, User);
         }
 
         public IActionResult Courses(int? skip, int? count)
         {
+            addUserNavbar();
             return View(_courseManager.GetCourses(skip ?? 0, count ?? 15));
         }
         
         public IActionResult ShowCourse(int id)
         {
+            addUserNavbar();
             if (_userManager.GetUser(User) is null)
                 ViewBag.IsCheckedOut = false;
             else
@@ -31,14 +42,14 @@ namespace mvclms.Controllers
                 ViewBag.IsCheckedOut = _courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, id,
                     _userManager.GetUser(User).IsTeacher);
                 if (!ViewBag.IsCheckedOut)
-                    ViewBag.navbar = new []{
-                        new NavbarButton
+                    ViewBag.navbar.Add
+                    (new NavbarButton
                     {
                         Title = "CheckOut",
                         Controller = "Course",
                         Action = "CheckoutCourse",
                         Id = id.ToString()
-                    } };
+                    });
             }
             
             return View(_courseManager.GetCourse(id));
@@ -46,6 +57,7 @@ namespace mvclms.Controllers
 
         public IActionResult ShowLecture(int id)
         {
+            addUserNavbar();
             var lecture = _courseManager.GetLecture(id);
             if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
                 lecture.CourseId,
@@ -53,22 +65,21 @@ namespace mvclms.Controllers
                 return Ok("you don't have permissions to show this lecture !!!");
 
             if (_userManager.isTeacher)
-                ViewBag.navbar = new[]
-                {
-                    new NavbarButton
+                ViewBag.navbar.Add
+                    (new NavbarButton
                     {
                         Title = "Edit",
                         Controller = "Course",
                         Action = "UpdateLecture",
                         Id = id.ToString(),
-                    }
-                };
+                    });
             return View(lecture);
         }
 
         [HttpGet]
         public IActionResult CreateCourse()
         {
+            addUserNavbar();
             _userManager.GetUser(User);
             if (!_userManager.isTeacher)
                 return Ok("You don't have permissions to create course !!!");
@@ -88,6 +99,7 @@ namespace mvclms.Controllers
         [HttpGet]
         public IActionResult CreateLecture()
         {
+            addUserNavbar();
             _userManager.GetUser(User);
             if (!_userManager.isTeacher)
                 return Ok("You don't have permissions to create lecture !!!");
@@ -113,6 +125,7 @@ namespace mvclms.Controllers
         [HttpGet]
         public IActionResult UpdateLecture(int id)
         {
+            addUserNavbar();
             var lecture = _courseManager.GetLecture(id);
             if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
                 lecture.CourseId,
@@ -148,6 +161,7 @@ namespace mvclms.Controllers
         [HttpGet]
         public IActionResult CheckoutCourse(int id)
         {
+            addUserNavbar();
             _userManager.GetUser(User);
             if (!_userManager.isStudent)
                 return Ok("You don't have permissions to checkout course !!!");
@@ -174,6 +188,7 @@ namespace mvclms.Controllers
 
         public IActionResult StudentCourses()
         {
+            addUserNavbar();
             _userManager.GetUser(User);
             if (!_userManager.isStudent)
                 return Ok("You don't have permissions to visit this page !!!");

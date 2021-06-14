@@ -23,8 +23,14 @@ namespace mvclms.Controllers
             _userManager = userManager;
         }
 
+        private void addUserNavbar()
+        {
+            _userManager.AddNavigationBarButtons(ViewBag, User);
+        }
+        
         public async Task<IActionResult> Index()
         {
+            addUserNavbar();
             return View();
         }
 
