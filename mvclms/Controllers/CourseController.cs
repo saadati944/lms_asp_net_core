@@ -41,7 +41,8 @@ namespace mvclms.Controllers
             {
                 ViewBag.IsCheckedOut = _courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, id,
                     _userManager.GetUser(User).IsTeacher);
-                if (!ViewBag.IsCheckedOut)
+                if (!ViewBag.IsCheckedOut && _userManager.isStudent)
+                {
                     ViewBag.navbar.Add
                     (new NavbarButton
                     {
@@ -50,6 +51,18 @@ namespace mvclms.Controllers
                         Action = "CheckoutCourse",
                         Id = id.ToString()
                     });
+                }
+                else if(ViewBag.IsCheckedOut && _userManager.isTeacher)
+                {
+                    ViewBag.navbar.Add
+                    (new NavbarButton
+                    {
+                        Title = "Add Lecture",
+                        Controller = "Course",
+                        Action = "CreateLecture",
+                        Id = id.ToString()
+                    });
+                }
             }
             
             return View(_courseManager.GetCourse(id));
@@ -97,17 +110,15 @@ namespace mvclms.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateLecture()
+        public IActionResult CreateLecture(int id)
         {
             addUserNavbar();
             _userManager.GetUser(User);
             if (!_userManager.isTeacher)
-                return Ok("You don't have permissions to create lecture !!!");
-            ViewModels.LectureViewModel lvm = new LectureViewModel();
-            lvm.Courses = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id)
-                .Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
-            if (lvm.Courses.Count == 0)
-                return Ok("Create a course first !!!");
+                return Ok("You don't have permissions to create new lecture !!!");
+            
+            LectureViewModel lvm = new LectureViewModel();
+            lvm.CourseId = id;
             return View(lvm);
         }
 

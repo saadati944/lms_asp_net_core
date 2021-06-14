@@ -111,7 +111,7 @@ namespace mvclms.Services
 
         public int CreateLecture(LectureViewModel lecture)
         {
-            return CreateLecture(lecture, GetCourse(int.Parse(lecture.Course)));
+            return CreateLecture(lecture, GetCourse(lecture.CourseId));
         }
 
         public int CreateLecture(LectureViewModel lecture, Course course)
