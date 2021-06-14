@@ -17,13 +17,30 @@ namespace mvclms.Controllers
             _userManager = userManager;
         }
 
+        public IActionResult Courses(int? skip, int? count)
+        {
+            return View(_courseManager.GetCourses(skip ?? 0, count ?? 15));
+        }
+        
         public IActionResult ShowCourse(int id)
         {
             if (_userManager.GetUser(User) is null)
                 ViewBag.IsCheckedOut = false;
             else
+            {
                 ViewBag.IsCheckedOut = _courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, id,
                     _userManager.GetUser(User).IsTeacher);
+                if (!ViewBag.IsCheckedOut)
+                    ViewBag.navbar = new []{
+                        new NavbarButton
+                    {
+                        Title = "CheckOut",
+                        Controller = "Course",
+                        Action = "CheckoutCourse",
+                        Id = id.ToString()
+                    } };
+            }
+            
             return View(_courseManager.GetCourse(id));
         }
 

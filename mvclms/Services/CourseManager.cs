@@ -21,12 +21,15 @@ namespace mvclms.Services
             _dbContext = dbContext;
         }
 
-        public List<Course> GetCourses(int skip = 0, int count = 10, bool includes = false)
+        public List<Course> GetCourses(int skip = 0, int count = 15, bool includes = true)
         {
+            //TODO: fix this warning
+            //The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results.
             if (includes)
                 return _dbContext.Courses.Skip(skip).Take(count).Include(x => x.Lectures).ThenInclude(x => x.Attachment)
                     .Include(x => x.StudentCourses)
-                    .ThenInclude(x => x.Student).Include(x => x.Teacher).ToList();
+                    .ThenInclude(x => x.Student).Include(x => x.Teacher)
+                    .Include(x=>x.Category).ToList();
             return _dbContext.Courses.Skip(skip).Take(count).ToList();
         }
 
