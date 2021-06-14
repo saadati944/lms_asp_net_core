@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using mvclms.ViewModels
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -24,12 +26,20 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
-                    @* <li class="nav-item"> *@
-                    @*     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
-                    @* </li> *@
-                    @* <li class="nav-item"> *@
-                    @*     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
-                    @* </li> *@
+                    @if (ViewBag.navbar is not null)
+                    {@foreach (NavbarButton x in ViewBag.navbar)
+                    {
+                        <li class="nav-item">
+                            @if(x.Id is null)
+                            {
+                                <a class="nav-link text-dark" asp-area="@x.Area" asp-controller="@x.Controller" asp-action="@x.Action">@x.Title</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link text-dark" asp-area="@x.Area" asp-controller="@x.Controller" asp-action="@x.Action" asp-route-id="@x.Id">@x.Title</a>
+                            }
+                        </li>
+                    }}
                 </ul>
             </div>
         </div>
