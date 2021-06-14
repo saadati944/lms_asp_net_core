@@ -16,7 +16,7 @@ namespace mvclms.Services
         int CreateCourse(CourseViewModel course, Person teacher);
         int CreateLecture(LectureViewModel lecture);
         int CreateLecture(LectureViewModel lecture, Course course);
-        void UpdateLecture(LectureViewModel updatedlecture, Lecture lecture);
+        void UpdateLecture(UpdateLectureViewModel updatedlecture);
 
         /// <summary>
         /// save a file into the server (in the wwwroot/UploadPath) then return it's path.

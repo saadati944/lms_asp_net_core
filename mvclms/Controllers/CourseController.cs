@@ -51,6 +51,18 @@ namespace mvclms.Controllers
                 lecture.CourseId,
                 _userManager.GetUser(User).IsTeacher))
                 return Ok("you don't have permissions to show this lecture !!!");
+
+            if (_userManager.isTeacher)
+                ViewBag.navbar = new[]
+                {
+                    new NavbarButton
+                    {
+                        Title = "Edit",
+                        Controller = "Course",
+                        Action = "UpdateLecture",
+                        Id = id.ToString(),
+                    }
+                };
             return View(lecture);
         }
 
@@ -95,6 +107,42 @@ namespace mvclms.Controllers
                 return Ok("You don't have permissions to create lecture !!!");
             int id = _courseManager.CreateLecture(lecture);
             return RedirectToAction("ShowLecture", "Course", new {id = id});
+        }
+        
+
+        [HttpGet]
+        public IActionResult UpdateLecture(int id)
+        {
+            var lecture = _courseManager.GetLecture(id);
+            if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+                lecture.CourseId,
+                true))
+                return Ok("you don't have permissions to update this lecture !!!");
+
+            UpdateLectureViewModel ulvm = new UpdateLectureViewModel
+            {
+                Title = lecture.Title,
+                Content = lecture.Content,
+                CourseId = lecture.CourseId,
+                LectureId = id,
+                AttachmentDesc = lecture.Attachment.Description
+            };
+            
+            return View(ulvm);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateLecture(UpdateLectureViewModel lecture)
+        {
+            var lc = _courseManager.GetLecture(lecture.LectureId);
+            if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+                lecture.CourseId,
+                true))
+                return Ok("you don't have permissions to update this lecture !!!");
+            
+            _courseManager.UpdateLecture(lecture);
+            
+            return RedirectToAction("ShowLecture", "Course", new {id = lecture.LectureId});
         }
 
         [HttpGet]

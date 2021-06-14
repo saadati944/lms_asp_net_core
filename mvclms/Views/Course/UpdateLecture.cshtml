@@ -1,0 +1,36 @@
+@model mvclms.ViewModels.UpdateLectureViewModel
+
+@{
+    ViewBag.Title = "UpdateLecture";
+    Layout = "_Layout";
+}
+
+<div class="text-left container">
+    <h2>UpdateLecture</h2>
+    <form asp-controller="Course" asp-action="UpdateLecture" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control"/>
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Content"></label>
+            <input asp-for="Content" class="form-control"/>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Attachment"></label>
+            <input asp-for="Attachment" class="form-control"/>
+            <span asp-validation-for="Attachment" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AttachmentDesc"></label>
+            <input asp-for="AttachmentDesc" id="txtCategory" class="form-control"/>
+            <span asp-validation-for="AttachmentDesc" class="text-danger"></span>
+        </div>
+        <input asp-for="CourseId">
+        <input asp-for="LectureId">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>

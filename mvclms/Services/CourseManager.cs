@@ -29,7 +29,7 @@ namespace mvclms.Services
                 return _dbContext.Courses.Skip(skip).Take(count).Include(x => x.Lectures).ThenInclude(x => x.Attachment)
                     .Include(x => x.StudentCourses)
                     .ThenInclude(x => x.Student).Include(x => x.Teacher)
-                    .Include(x=>x.Category).ToList();
+                    .Include(x => x.Category).ToList();
             return _dbContext.Courses.Skip(skip).Take(count).ToList();
         }
 
@@ -125,9 +125,15 @@ namespace mvclms.Services
             return l.Id;
         }
 
-        public void UpdateLecture(LectureViewModel updatedlecture, Lecture lecture)
+        public void UpdateLecture(UpdateLectureViewModel updatedlecture)
         {
+            var lecture = GetLecture(updatedlecture.LectureId);
+
             lecture.Content = updatedlecture.Content;
+            lecture.Title = updatedlecture.Title;
+            lecture.Attachment.Description = updatedlecture.AttachmentDesc;
+
+
             Models.File f = lecture.Attachment;
             if (updatedlecture.Attachment is not null)
             {
