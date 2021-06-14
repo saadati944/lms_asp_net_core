@@ -65,12 +65,15 @@ namespace mvclms.Controllers
             ViewModels.LectureViewModel lvm = new LectureViewModel();
             lvm.Courses = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id)
                 .Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
+            if (lvm.Courses.Count == 0)
+                return Ok("Create a course first !!!");
             return View(lvm);
         }
 
         [HttpPost]
         public IActionResult CreateLecture(ViewModels.LectureViewModel lecture)
         {
+            _userManager.GetUser(User);
             if (!_userManager.isTeacher)
                 return Ok("You don't have permissions to create lecture !!!");
             int id = _courseManager.CreateLecture(lecture);
