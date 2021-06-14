@@ -16,15 +16,25 @@ namespace mvclms.Controllers
             _courseManager = courseManager;
             _userManager = userManager;
         }
-        
+
         public IActionResult ShowCourse(int id)
         {
+            if (_userManager.GetUser(User) is null)
+                ViewBag.IsCheckedOut = false;
+            else
+                ViewBag.IsCheckedOut = _courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, id,
+                    _userManager.GetUser(User).IsTeacher);
             return View(_courseManager.GetCourse(id));
         }
 
         public IActionResult ShowLecture(int id)
         {
-            return View(_courseManager.GetLecture(id));
+            var lecture = _courseManager.GetLecture(id);
+            if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+                lecture.CourseId,
+                _userManager.GetUser(User).IsTeacher))
+                return Ok("you don't have permissions to show this lecture !!!");
+            return View(lecture);
         }
 
         [HttpGet]
@@ -57,7 +67,7 @@ namespace mvclms.Controllers
                 .Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
             return View(lvm);
         }
-        
+
         [HttpPost]
         public IActionResult CreateLecture(ViewModels.LectureViewModel lecture)
         {
@@ -74,7 +84,7 @@ namespace mvclms.Controllers
             if (!_userManager.isStudent)
                 return Ok("You don't have permissions to checkout course !!!");
             ViewBag.model = _courseManager.GetCourse(id);
-            return View(new CheckoutCourseViewModel{ CourseId = id });
+            return View(new CheckoutCourseViewModel {CourseId = id});
         }
 
         [HttpPost]
@@ -83,12 +93,14 @@ namespace mvclms.Controllers
             _userManager.GetUser(User);
             if (!co.Sure)
                 return Ok("checkout failed !!!");
-         
+
             if (!_userManager.isStudent)
-                return Ok("You don't have permissions to checkout course page !!!");   
-            
+                return Ok("You don't have permissions to checkout course page !!!");
+
+            //TODO: use a payment method to pay the price
+
             _courseManager.CheckoutCourse(co.CourseId, _userManager.GetUser(User));
-            
+
             return RedirectToAction("StudentCourses", "Course");
         }
 

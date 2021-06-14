@@ -21,11 +21,14 @@
         <dd>@Model.StudentCourses.Count</dd>
     </dl>
     
-    <div>
-        @foreach(var x in Model.Lectures)
-        {
-            <a asp-controller="Course" asp-action="ShowLecture" asp-route-id="@x.Id">@x.Title</a>
-            <hr>
-        }
-    </div>
+    @if(ViewBag.IsCheckedOut)
+    {
+        <div>
+            @foreach (var x in Model.Lectures)
+            {
+                <a asp-controller="Course" asp-action="ShowLecture" asp-route-id="@x.Id">@x.Title</a>
+                <hr>
+            }
+        </div>
+    }
 </div>

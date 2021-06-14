@@ -32,12 +32,26 @@ namespace mvclms.Services
 
         public List<Course> GetTeacherCourses(string userid)
         {
-            return _dbContext.Courses.Where(x=>x.TeacherId == userid).ToList();
+            return _dbContext.Courses.Where(x => x.TeacherId == userid).ToList();
+        }
+
+        public bool IsCourseCheckedOut(string userid, int courseid, bool checkForTeacher = false)
+        {
+            if (!checkForTeacher)
+                return _dbContext.Users.Where(x => x.Id == userid).Include(x => x.StudentCourses).Single()
+                    .StudentCourses
+                    .Any(x => x.CourseId == courseid);
+            return _dbContext.Users.Where(x => x.Id == userid).Include(x => x.Courses).Single()
+                .Courses
+                .Any(x => x.Id == courseid);
         }
 
         public List<StudentCourse> GetStudentCourses(string userid)
         {
-            Person student = _dbContext.Users.Include(x=>x.StudentCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Teacher).Include(x=>x.StudentCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Category).Single(x => x.Id == userid);
+            Person student = _dbContext.Users.Where(x => x.Id == userid).Include(x => x.StudentCourses)
+                .ThenInclude(x => x.Course)
+                .ThenInclude(x => x.Teacher).Include(x => x.StudentCourses).ThenInclude(x => x.Course)
+                .ThenInclude(x => x.Category).Single(x => x.Id == userid);
             return student.StudentCourses.ToList();
         }
 
@@ -55,7 +69,8 @@ namespace mvclms.Services
 
         public Lecture GetLecture(int lecId)
         {
-            return _dbContext.Lectures.Where(x => x.Id == lecId).Include(x => x.Attachment).Include(x => x.Course).ThenInclude(x=>x.Teacher)
+            return _dbContext.Lectures.Where(x => x.Id == lecId).Include(x => x.Attachment).Include(x => x.Course)
+                .ThenInclude(x => x.Teacher)
                 .FirstOrDefault();
         }
 
@@ -146,7 +161,7 @@ namespace mvclms.Services
         public void RemoveFile(string path)
         {
             string fullpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", path);
-            if(File.Exists(fullpath))
+            if (File.Exists(fullpath))
                 File.Delete(fullpath);
         }
 
