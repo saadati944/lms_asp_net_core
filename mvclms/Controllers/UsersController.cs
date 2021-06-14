@@ -9,19 +9,23 @@ namespace mvclms.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly MyUserManager _myUserManager;
+        private readonly MyUserManager _userManager;
         private readonly ApplicationDbContext _dbContext;
 
-        public UsersController(MyUserManager myUserManager, ApplicationDbContext dbContext)
+        public UsersController(MyUserManager userManager, ApplicationDbContext dbContext)
         {
-            _myUserManager = myUserManager;
+            _userManager = userManager;
             _dbContext = dbContext;
         }
 
+        private void addUserNavbar()
+        {
+            _userManager.AddNavigationBarButtons(ViewBag, User);
+        }
 
         public IActionResult Logout()
         {
-            _myUserManager.Logout();
+            _userManager.Logout();
             return View();
         }
 
@@ -39,7 +43,7 @@ namespace mvclms.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = _myUserManager.CreateUser(person);
+            var result = _userManager.CreateUser(person);
             
             if (!result.Succeeded)
             {
@@ -63,18 +67,43 @@ namespace mvclms.Controllers
             if (!ModelState.IsValid)
                 return View();
             
-            _myUserManager.Login(logindata);
+            _userManager.Login(logindata);
 
             return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Profile(string? id)
         {
+            addUserNavbar();
+            if(_userManager.isTeacher)
+            {
+                ViewBag.navbar.Add(new NavbarButton
+                {
+                    Title = "CreatedCourses",
+                    Controller = "Course",
+                    Action = "TeacherCourses"
+                });
+                ViewBag.navbar.Add(new NavbarButton
+                {
+                    Title = "NewCourse",
+                    Controller = "Course",
+                    Action = "CreateCourse"
+                });
+            }
+            else
+            {
+                ViewBag.navbar.Add(new NavbarButton
+                {
+                    Title = "Courses",
+                    Controller = "Course",
+                    Action = "StudentCourses"
+                });
+            }
             Person p;
             if (id is null)
-                p = _myUserManager.GetUser(_myUserManager.GetUser(User).Id);
+                p = _userManager.GetUser(_userManager.GetUser(User).Id);
             else
-                p = _myUserManager.GetUser(id);
+                p = _userManager.GetUser(id);
             
             return View(p);
         }

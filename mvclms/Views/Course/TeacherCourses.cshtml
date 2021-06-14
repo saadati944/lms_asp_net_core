@@ -1,0 +1,33 @@
+@model System.Collections.Generic.List<mvclms.Models.Course>
+    
+@{
+    ViewBag.Title = "Created courses";
+    Layout = "_Layout";
+}
+
+<div class="text-left container">
+    <h2>Courses</h2>
+    <table border='1'>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Teacher</th>
+            <th>Start date</th>
+            <th>End date</th>
+        </tr>
+        @foreach(var x in Model)
+        {
+            <tr>
+                <td>@x.Id</td>
+                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.Id">
+                    @x.Name
+                </a></td>
+                <td>@x.Category.Name</td>
+                <td>@x.Teacher.FullName</td>
+                <td>@x.StartDate.ToLongDateString()  @x.StartDate.ToLongTimeString()</td>
+                <td>@x.EndDate.ToLongDateString()  @x.EndDate.ToLongTimeString()</td>
+            </tr>
+        }
+    </table>
+</div>

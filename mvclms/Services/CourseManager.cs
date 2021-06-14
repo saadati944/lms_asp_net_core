@@ -33,9 +33,21 @@ namespace mvclms.Services
             return _dbContext.Courses.Skip(skip).Take(count).ToList();
         }
 
+        public List<StudentCourse> GetStudentCourses(string userid)
+        {
+            Person student = _dbContext.Users.Where(x => x.Id == userid).Include(x => x.StudentCourses)
+                .ThenInclude(x => x.Course)
+                .ThenInclude(x => x.Teacher).Include(x => x.StudentCourses).ThenInclude(x => x.Course)
+                .ThenInclude(x => x.Category).Single(x => x.Id == userid);
+            return student.StudentCourses.ToList();
+        }
+
         public List<Course> GetTeacherCourses(string userid)
         {
-            return _dbContext.Courses.Where(x => x.TeacherId == userid).ToList();
+            Person teacher = _dbContext.Users.Where(x => x.Id == userid).Include(x => x.Courses)
+                .ThenInclude(x => x.Teacher).Include(x => x.Courses)
+                .ThenInclude(x => x.Category).Single(x => x.Id == userid);
+            return teacher.Courses.ToList();
         }
 
         public bool IsCourseCheckedOut(string userid, int courseid, bool checkForTeacher = false)
@@ -47,15 +59,6 @@ namespace mvclms.Services
             return _dbContext.Users.Where(x => x.Id == userid).Include(x => x.Courses).Single()
                 .Courses
                 .Any(x => x.Id == courseid);
-        }
-
-        public List<StudentCourse> GetStudentCourses(string userid)
-        {
-            Person student = _dbContext.Users.Where(x => x.Id == userid).Include(x => x.StudentCourses)
-                .ThenInclude(x => x.Course)
-                .ThenInclude(x => x.Teacher).Include(x => x.StudentCourses).ThenInclude(x => x.Course)
-                .ThenInclude(x => x.Category).Single(x => x.Id == userid);
-            return student.StudentCourses.ToList();
         }
 
         public Course GetCourse(int id)

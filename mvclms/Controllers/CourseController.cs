@@ -194,5 +194,14 @@ namespace mvclms.Controllers
                 return Ok("You don't have permissions to visit this page !!!");
             return View(_courseManager.GetStudentCourses(_userManager.GetUser(User).Id));
         }
+        
+        public IActionResult TeacherCourses()
+        {
+            addUserNavbar();
+            _userManager.GetUser(User);
+            if (!_userManager.isTeacher)
+                return Ok("You don't have permissions to visit this page !!!");
+            return View(_courseManager.GetTeacherCourses(_userManager.GetUser(User).Id));
+        }
     }
 }
