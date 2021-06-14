@@ -16,6 +16,10 @@ namespace mvclms.Services
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Person> _userManager;
         private readonly SignInManager<Person> _signInManager;
+        
+        public bool isTeacher = false;
+        public bool isStudent = false;
+        
         private Person _user;
         
         public MyUserManager(ApplicationDbContext dbContext, UserManager<Person> userManager,
@@ -73,7 +77,17 @@ namespace mvclms.Services
         public Person GetUser(ClaimsPrincipal claimsPrincipal)
         {
             if(_user is null)
+            {
                 _user = _userManager.GetUserAsync(claimsPrincipal).GetAwaiter().GetResult();
+                
+                if (_user is not null)
+                {
+                    if (_user.IsTeacher)
+                        isTeacher = true;
+                    else
+                        isStudent = true;
+                }
+            }
 
             return _user;
         }

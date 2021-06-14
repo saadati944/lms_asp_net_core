@@ -30,8 +30,8 @@ namespace mvclms.Controllers
         [HttpGet]
         public IActionResult CreateCourse()
         {
-            var user = _userManager.GetUser(User); 
-            if (user is null || !user.IsTeacher)
+            _userManager.GetUser(User);
+            if (!_userManager.isTeacher)
                 return Ok("You don't have permissions to create course !!!");
             return View();
         }
@@ -39,21 +39,21 @@ namespace mvclms.Controllers
         [HttpPost]
         public IActionResult CreateCourse(ViewModels.CourseViewModel course)
         {
-            var user = _userManager.GetUser(User); 
-            if (user is null || !user.IsTeacher)
+            _userManager.GetUser(User);
+            if (!_userManager.isTeacher)
                 return Ok("You don't have permissions to create course !!!");
-            int id = _courseManager.CreateCourse(course, user);
+            int id = _courseManager.CreateCourse(course, _userManager.GetUser(User));
             return RedirectToAction("ShowCourse", "Course", new {id = id});
         }
 
         [HttpGet]
         public IActionResult CreateLecture()
         {
-            var user = _userManager.GetUser(User); 
-            if (user is null || !user.IsTeacher)
-                return Ok("You don't have permissions to create course !!!");
+            _userManager.GetUser(User);
+            if (!_userManager.isTeacher)
+                return Ok("You don't have permissions to create lecture !!!");
             ViewModels.LectureViewModel lvm = new LectureViewModel();
-            lvm.Courses = _courseManager.GetTeacherCourses(user.Id)
+            lvm.Courses = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id)
                 .Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToList();
             return View(lvm);
         }
@@ -61,9 +61,8 @@ namespace mvclms.Controllers
         [HttpPost]
         public IActionResult CreateLecture(ViewModels.LectureViewModel lecture)
         {
-            var user = _userManager.GetUser(User); 
-            if (user is null || !user.IsTeacher)
-                return Ok("You don't have permissions to create course !!!");
+            if (!_userManager.isTeacher)
+                return Ok("You don't have permissions to create lecture !!!");
             int id = _courseManager.CreateLecture(lecture);
             return RedirectToAction("ShowLecture", "Course", new {id = id});
         }
@@ -71,9 +70,9 @@ namespace mvclms.Controllers
         [HttpGet]
         public IActionResult CheckoutCourse(int id)
         {
-            var user = _userManager.GetUser(User); 
-            if (user is null || user.IsTeacher)
-                return Ok("You don't have permissions to create course !!!");
+            _userManager.GetUser(User);
+            if (!_userManager.isStudent)
+                return Ok("You don't have permissions to checkout course !!!");
             ViewBag.model = _courseManager.GetCourse(id);
             return View(new CheckoutCourseViewModel{ CourseId = id });
         }
@@ -81,24 +80,24 @@ namespace mvclms.Controllers
         [HttpPost]
         public IActionResult CheckoutCourse(CheckoutCourseViewModel co)
         {
+            _userManager.GetUser(User);
             if (!co.Sure)
                 return Ok("checkout failed !!!");
          
-            var user = _userManager.GetUser(User); 
-            if (user is null || user.IsTeacher)
-                return Ok("You don't have permissions to create course !!!");   
+            if (!_userManager.isStudent)
+                return Ok("You don't have permissions to checkout course page !!!");   
             
-            _courseManager.CheckoutCourse(co.CourseId, user);
+            _courseManager.CheckoutCourse(co.CourseId, _userManager.GetUser(User));
             
             return RedirectToAction("StudentCourses", "Course");
         }
 
         public IActionResult StudentCourses()
         {
-            var user = _userManager.GetUser(User); 
-            if (user is null || user.IsTeacher)
-                return Ok("You don't have permissions to create course !!!");
-            return Ok(_courseManager.GetStudentCourses(user.Id));
+            _userManager.GetUser(User);
+            if (!_userManager.isStudent)
+                return Ok("You don't have permissions to visit this page !!!");
+            return View(_courseManager.GetStudentCourses(_userManager.GetUser(User).Id));
         }
     }
 }

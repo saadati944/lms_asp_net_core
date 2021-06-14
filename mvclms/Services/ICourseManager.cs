@@ -9,7 +9,7 @@ namespace mvclms.Services
     {
         List<Course> GetCourses(int skip = 0, int count = 10, bool includes = false);
         List<Course> GetTeacherCourses(string userid);
-        List<Course> GetStudentCourses(string userid);
+        List<StudentCourse> GetStudentCourses(string userid);
         Course GetCourse(int id);
         List<Lecture> GetLectures(Course course);
         Lecture GetLecture(int lecId);

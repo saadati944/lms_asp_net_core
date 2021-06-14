@@ -35,10 +35,10 @@ namespace mvclms.Services
             return _dbContext.Courses.Where(x=>x.TeacherId == userid).ToList();
         }
 
-        public List<Course> GetStudentCourses(string userid)
+        public List<StudentCourse> GetStudentCourses(string userid)
         {
-            Person student = _dbContext.Users.Include(x=>x.Courses).Single(x => x.Id == userid);
-            return student.Courses.ToList();
+            Person student = _dbContext.Users.Include(x=>x.StudentCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Teacher).Include(x=>x.StudentCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Category).Single(x => x.Id == userid);
+            return student.StudentCourses.ToList();
         }
 
         public Course GetCourse(int id)

@@ -1,0 +1,41 @@
+@model System.Collections.Generic.List<mvclms.Models.StudentCourse>
+
+@{
+    ViewBag.Title = "student courses";
+    Layout = "_Layout";
+}
+
+<div class="text-left container">
+    <h2>student courses</h2>
+    <table border='1'>
+        <tr>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Category</td>
+            <td>Teacher</td>
+            <td>Start date</td>
+            <td>End date</td>
+        </tr>
+        @foreach(var x in Model)
+        {
+            <tr>
+                <td>@x.Course.Id</td>
+                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
+                    @x.Course.Name
+                </a></td>
+                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
+                    @x.Course.Category.Name
+                </a></td>
+                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
+                    @x.Course.Teacher.FullName
+                </a></td>
+                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
+                    @x.Course.StartDate.ToLongDateString()  @x.Course.StartDate.ToLongTimeString()
+                </a></td>
+                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
+                    @x.Course.EndDate.ToLongDateString()  @x.Course.EndDate.ToLongTimeString()
+                </a></td>
+            </tr>
+        }
+    </table>
+</div>
