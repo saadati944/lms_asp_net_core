@@ -23,52 +23,56 @@ namespace mvclms.Services
 
         public List<Course> GetCourses(int skip = 0, int count = 15, bool includes = true)
         {
-            //TODO: fix this warning
-            //The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results.
             if (includes)
-                return _dbContext.Courses.Skip(skip).Take(count).Include(x => x.Lectures).ThenInclude(x => x.Attachment)
-                    .Include(x => x.StudentCourses)
-                    .ThenInclude(x => x.Student).Include(x => x.Teacher)
-                    .Include(x => x.Category).ToList();
+                return _dbContext.Courses
+                    .OrderBy(x=>x.StartDate).Skip(skip).Take(count)
+                    .Include(x => x.Lectures).ThenInclude(x => x.Attachment)
+                    .Include(x => x.StudentCourses).ThenInclude(x => x.Student)
+                    .Include(x => x.Teacher)
+                    .Include(x => x.Category)
+                    .ToList();
             return _dbContext.Courses.Skip(skip).Take(count).ToList();
         }
 
         public List<StudentCourse> GetStudentCourses(string userid)
         {
-            Person student = _dbContext.Users.Where(x => x.Id == userid).Include(x => x.StudentCourses)
-                .ThenInclude(x => x.Course)
-                .ThenInclude(x => x.Teacher).Include(x => x.StudentCourses).ThenInclude(x => x.Course)
-                .ThenInclude(x => x.Category).Single(x => x.Id == userid);
-            return student.StudentCourses.ToList();
+            return _dbContext.StudentCourses.Where(x => x.StudentId == userid)
+                .Include(x => x.Course).ThenInclude(x=>x.Category)
+                .Include(x=>x.Course).ThenInclude(x=>x.Teacher)
+                .Include(x => x.Student)
+                .ToList();
         }
 
         public List<Course> GetTeacherCourses(string userid)
         {
-            Person teacher = _dbContext.Users.Where(x => x.Id == userid).Include(x => x.Courses)
-                .ThenInclude(x => x.Teacher).Include(x => x.Courses)
-                .ThenInclude(x => x.Category).Single(x => x.Id == userid);
+            Person teacher = _dbContext.Users.Where(x => x.Id == userid)
+                .Include(x => x.Courses).ThenInclude(x => x.Teacher)
+                .Include(x => x.Courses).ThenInclude(x => x.Category)
+                .FirstOrDefault(x => x.Id == userid);
             return teacher.Courses.ToList();
         }
 
         public bool IsCourseCheckedOut(string userid, int courseid, bool checkForTeacher = false)
         {
             if (!checkForTeacher)
-                return _dbContext.Users.Where(x => x.Id == userid).Include(x => x.StudentCourses).Single()
-                    .StudentCourses
-                    .Any(x => x.CourseId == courseid);
-            return _dbContext.Users.Where(x => x.Id == userid).Include(x => x.Courses).Single()
-                .Courses
-                .Any(x => x.Id == courseid);
+                return _dbContext.Users
+                    .Include(x => x.StudentCourses)
+                    .FirstOrDefault(x => x.Id == userid)
+                    .StudentCourses.Any(x => x.CourseId == courseid);
+            return _dbContext.Users
+                .Include(x => x.Courses)
+                .FirstOrDefault(x => x.Id == userid)
+                .Courses.Any(x => x.Id == courseid);
         }
 
         public Course GetCourse(int id)
         {
-            return _dbContext.Courses.Where(x => x.Id == id)
+            return _dbContext.Courses
                 .Include(x => x.Lectures).ThenInclude(x => x.Attachment)
                 .Include(x => x.StudentCourses).ThenInclude(x => x.Student)
-                .Include(x=>x.Category)
+                .Include(x => x.Category)
                 .Include(x => x.Teacher)
-                .FirstOrDefault();
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public List<Lecture> GetLectures(Course course)
@@ -78,9 +82,11 @@ namespace mvclms.Services
 
         public Lecture GetLecture(int lecId)
         {
-            return _dbContext.Lectures.Where(x => x.Id == lecId).Include(x => x.Attachment).Include(x => x.Course)
-                .ThenInclude(x => x.Teacher)
-                .FirstOrDefault();
+            return _dbContext.Lectures
+                .Include(x => x.Attachment)
+                .Include(x => x.Course).ThenInclude(x => x.Teacher)
+                .FirstOrDefault(x => x.Id == lecId);
+
         }
 
         public int CreateCourse(CourseViewModel course, Person teacher)
@@ -167,24 +173,6 @@ namespace mvclms.Services
 
             _dbContext.SaveChanges();
         }
-        // public void RemoveLecture(int id)
-        // {
-        //     var lecture = new Lecture
-        //     {
-        //         Id = id
-        //     };
-        //
-        //     Models.File file = _dbContext.Files.FirstOrDefault(x => x.LectureId == id);
-        //     if (file is not null)
-        //     {
-        //         RemoveFile(file.Path);
-        //         _dbContext.Remove(file);
-        //     }
-        //
-        //     _dbContext.Remove(lecture);
-        //     
-        //     _dbContext.SaveChanges();
-        // }
         public void RemoveLecture(Lecture lec)
         {
             if (lec.Attachment is not null)
