@@ -81,8 +81,11 @@ namespace mvclms.Controllers
                 return Ok("you don't have permissions to show this lecture !!!");
 
             if (_userManager.isTeacher)
+            {
                 AddNavigation("Edit", "Course", "UpdateLecture", id);
-            
+                AddNavigation("Remove", "Course", "RemoveLecture", id);
+            }
+
             AddNavigation("Back", "Course", "ShowCourse", lecture.CourseId);
             return View(lecture);
         }
@@ -168,17 +171,52 @@ namespace mvclms.Controllers
 
             return RedirectToAction("ShowLecture", "Course", new {id = lecture.LectureId});
         }
+        [HttpGet]
+        public IActionResult RemoveLecture(int id)
+        {
+            addUserNavbar();
+            var lecture = _courseManager.GetLecture(id);
+            if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+                lecture.CourseId,
+                true))
+                return Ok("you don't have permissions to update this lecture !!!");
+            
+            AddNavigation("Back", "Course", "ShowLecture", id);
+            
+            ViewBag.lecture = lecture;
+            return View(new ConfirmOperationViewModel{Id = id});
+        }
         
+        [HttpPost]
+        public IActionResult RemoveLecture(ConfirmOperationViewModel confirm)
+        {
+            // int courseid = _courseManager.GetLectureCourse(confirm.Id);
+            // if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+            //     courseid,
+            //     true))
+            //     return Ok("you don't have permissions to update this lecture !!!");
+            // _courseManager.RemoveLecture(confirm.Id);
+            // return RedirectToAction("ShowCourse", "Course", new {id = courseid});
+            var lecture = _courseManager.GetLecture(confirm.Id);
+            if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+                lecture.CourseId,
+                true))
+                return Ok("you don't have permissions to update this lecture !!!");
+            _courseManager.RemoveLecture(lecture);
+            return RedirectToAction("ShowCourse", "Course", new {id = lecture.CourseId});
+        }
+
         [HttpGet]
         public IActionResult UpdateCourse(int id)
         {
             addUserNavbar();
             if (_userManager.GetUser(User) is null || !_userManager.isTeacher)
                 return Ok("you don't have permissions to update this course !!!");
-            
-            var course = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id).FirstOrDefault(x => x.Id == id);
-            
-            if(course is null)
+
+            var course = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id)
+                .FirstOrDefault(x => x.Id == id);
+
+            if (course is null)
                 return Ok("you don't have permissions to update this course !!!");
 
             CourseViewModel cvm = new CourseViewModel
@@ -191,7 +229,7 @@ namespace mvclms.Controllers
                 StartDate = course.StartDate,
                 EndDate = course.EndDate
             };
-            
+
             AddNavigation("Back", "Course", "ShowCourse", id);
             return View(cvm);
         }
@@ -199,20 +237,9 @@ namespace mvclms.Controllers
         [HttpPost]
         public IActionResult UpdateCourse(CourseViewModel cvm)
         {
-            // if (_userManager.GetUser(User) is null || !_userManager.isTeacher || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, cvm.Id, true))
-            //     return Ok("you don't have permissions to update this course !!!");
-
-            if (_userManager.GetUser(User) is null)
+            if (_userManager.GetUser(User) is null || !_userManager.isTeacher ||
+                !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, cvm.Id, true))
                 return Ok("you don't have permissions to update this course !!!");
-            if (!_userManager.isTeacher)
-                return Ok("you don't have permissions to update this course !!!");
-            if (!_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, cvm.Id, true))
-                return Ok("you don't have permissions to update this course !!!");
-
-            // var course = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id).FirstOrDefault(x => x.Id != cvm.Id);
-            //
-            // if(course is null)
-            //     return Ok("you don't have permissions to update this course !!!");
 
             _courseManager.UpdateCourse(cvm);
 

@@ -1,0 +1,20 @@
+@model mvclms.ViewModels.ConfirmOperationViewModel
+
+@{
+    ViewBag.Title = "RemoveLecture";
+    Layout = "_Layout";
+}
+
+<div class="container text-left">
+    <form asp-controller="Course" asp-action="RemoveLecture">
+        <div asp-validation-summary="All" class="text-danger">Are you sure you want to remove this lecture ?</div>
+            <h1>@ViewBag.lecture.Title</h1>
+            <p>@ViewBag.lecture.Content</p>
+            <p>@ViewBag.lecture.Attachment.Description</p>
+            <p>Author : @ViewBag.lecture.Course.Teacher.FullName</p>
+        
+        <input asp-for="Sure">
+        <a class="btn btn-primary" asp-controller="Course" asp-action="RemoveLecture" asp-route-id="@ViewBag.lecture.Id">cancel</a>
+        <button type="submit" class="btn btn-danger">Remove</button>
+    </form>
+</div>

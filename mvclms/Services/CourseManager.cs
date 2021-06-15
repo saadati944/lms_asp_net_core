@@ -167,6 +167,37 @@ namespace mvclms.Services
 
             _dbContext.SaveChanges();
         }
+        // public void RemoveLecture(int id)
+        // {
+        //     var lecture = new Lecture
+        //     {
+        //         Id = id
+        //     };
+        //
+        //     Models.File file = _dbContext.Files.FirstOrDefault(x => x.LectureId == id);
+        //     if (file is not null)
+        //     {
+        //         RemoveFile(file.Path);
+        //         _dbContext.Remove(file);
+        //     }
+        //
+        //     _dbContext.Remove(lecture);
+        //     
+        //     _dbContext.SaveChanges();
+        // }
+        public void RemoveLecture(Lecture lec)
+        {
+            if (lec.Attachment is not null)
+            {
+                RemoveFile(lec.Attachment.Path);
+                _dbContext.Remove(lec.Attachment);
+            }
+        
+            _dbContext.Remove(lec);
+            
+            _dbContext.SaveChanges();
+        }
+        
 
         /// <summary>
         /// save a file into the server (in the wwwroot/UploadPath) then return it's path.
@@ -205,6 +236,11 @@ namespace mvclms.Services
         {
             student.StudentCourses.Add(new StudentCourse {Course = c, Student = student});
             _dbContext.SaveChanges();
+        }
+
+        public int GetLectureCourse(int lectureId)
+        {
+            return _dbContext.Lectures.FirstOrDefault(x => x.Id == lectureId).CourseId;
         }
     }
 }
