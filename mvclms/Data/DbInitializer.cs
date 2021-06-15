@@ -13,7 +13,6 @@ namespace mvclms.Data
         public static void Initialize(ApplicationDbContext context, MyUserManager usermanager,
             IServiceProvider services)
         {
-            // Get a logger
             var logger = services.GetRequiredService<ILogger<DbInitializer>>();
 
             // Make sure the database is created
@@ -92,7 +91,7 @@ namespace mvclms.Data
                 PersonMode = "Student",
                 UserName = "user2"
             });
-            
+
             context.SaveChanges();
 
             logger.LogInformation("Finished seeding the database.");

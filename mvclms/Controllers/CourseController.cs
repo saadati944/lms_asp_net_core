@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using mvclms.Services;
 using mvclms.ViewModels;
 
@@ -18,7 +16,6 @@ namespace mvclms.Controllers
             _courseManager = courseManager;
             _userManager = userManager;
             ViewBag.navbar = new List<NavbarButton>();
-
         }
 
         private void addUserNavbar()
@@ -60,7 +57,7 @@ namespace mvclms.Controllers
                 ViewBag.IsCheckedOut = _courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, id,
                     _userManager.GetUser(User).IsTeacher);
                 if (!ViewBag.IsCheckedOut && _userManager.isStudent)
-                    AddNavigation("CheckOut", "Course", "Course", id);
+                    AddNavigation("CheckOut", "Course", "CheckoutCourse", id);
                 else if (ViewBag.IsCheckedOut && _userManager.isTeacher)
                 {
                     AddNavigation("Add Lecture", "Course", "CreateLecture", id);

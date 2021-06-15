@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,14 +10,10 @@ namespace mvclms.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _dbContext;
         private readonly MyUserManager _userManager;
         
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext, MyUserManager userManager)
         {
-            _logger = logger;
-            _dbContext = dbContext;
             _userManager = userManager;
         }
 

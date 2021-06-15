@@ -9,7 +9,7 @@ namespace mvclms.ViewModels
     public class PersonViewModel
     {
         [Required]
-        [DisplayName("User Name")]   
+        [DisplayName("User Name")]
         [StringLength(100)]
         public string UserName { get; set; }
 
@@ -17,7 +17,7 @@ namespace mvclms.ViewModels
         [DisplayName("First Name")]
         [StringLength(100)]
         public string FirstName { get; set; }
-        
+
         [Required]
         [StringLength(100)]
         [DisplayName("Last Name")]
@@ -27,17 +27,17 @@ namespace mvclms.ViewModels
         [DataType(DataType.Password)]
         [DisplayName("Password")]
         public string Password { get; set; }
-        
+
         [Required]
         [DataType(DataType.Password)]
         [DisplayName("Confirm Password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-        
-        
+
+
         public string PersonMode { get; set; }
 
-        public static List<SelectListItem> PersonModes { get; set; } = new List<SelectListItem>
+        public static List<SelectListItem> PersonModes { get; set; } = new()
             {new SelectListItem("Teacher", "Teacher"), new SelectListItem("Student", "Student")};
     }
 }
