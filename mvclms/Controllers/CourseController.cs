@@ -18,7 +18,7 @@ namespace mvclms.Controllers
             _courseManager = courseManager;
             _userManager = userManager;
             ViewBag.navbar = new List<NavbarButton>();
-            
+
         }
 
         private void addUserNavbar()
@@ -26,12 +26,30 @@ namespace mvclms.Controllers
             _userManager.AddNavigationBarButtons(ViewBag, User);
         }
 
+        private void AddNavigation(string title, string controller, string action, int id, string area = "")
+        {
+            AddNavigation(title, controller, action, id.ToString(), area);
+        }
+
+        private void AddNavigation(string title, string controller, string action, string id = null, string area = "")
+        {
+            ViewBag.navbar.Add
+            (new NavbarButton
+            {
+                Title = title,
+                Controller = controller,
+                Action = action,
+                Id = id,
+                Area = area
+            });
+        }
+
         public IActionResult Courses(int? skip, int? count)
         {
             addUserNavbar();
             return View(_courseManager.GetCourses(skip ?? 0, count ?? 15));
         }
-        
+
         public IActionResult ShowCourse(int id)
         {
             addUserNavbar();
@@ -42,29 +60,11 @@ namespace mvclms.Controllers
                 ViewBag.IsCheckedOut = _courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, id,
                     _userManager.GetUser(User).IsTeacher);
                 if (!ViewBag.IsCheckedOut && _userManager.isStudent)
-                {
-                    ViewBag.navbar.Add
-                    (new NavbarButton
-                    {
-                        Title = "CheckOut",
-                        Controller = "Course",
-                        Action = "CheckoutCourse",
-                        Id = id.ToString()
-                    });
-                }
-                else if(ViewBag.IsCheckedOut && _userManager.isTeacher)
-                {
-                    ViewBag.navbar.Add
-                    (new NavbarButton
-                    {
-                        Title = "Add Lecture",
-                        Controller = "Course",
-                        Action = "CreateLecture",
-                        Id = id.ToString()
-                    });
-                }
+                    AddNavigation("CheckOut", "Course", "Course", id);
+                else if (ViewBag.IsCheckedOut && _userManager.isTeacher)
+                    AddNavigation("Add Lecture", "Course", "CreateLecture", id);
             }
-            
+
             return View(_courseManager.GetCourse(id));
         }
 
@@ -78,14 +78,7 @@ namespace mvclms.Controllers
                 return Ok("you don't have permissions to show this lecture !!!");
 
             if (_userManager.isTeacher)
-                ViewBag.navbar.Add
-                    (new NavbarButton
-                    {
-                        Title = "Edit",
-                        Controller = "Course",
-                        Action = "UpdateLecture",
-                        Id = id.ToString(),
-                    });
+                AddNavigation("Edit", "Course", "UpdateLecture", id);
             return View(lecture);
         }
 
@@ -116,7 +109,9 @@ namespace mvclms.Controllers
             _userManager.GetUser(User);
             if (!_userManager.isTeacher)
                 return Ok("You don't have permissions to create new lecture !!!");
-            
+
+            AddNavigation("Back", "Course", "ShowCourse", id);
+
             LectureViewModel lvm = new LectureViewModel();
             lvm.CourseId = id;
             return View(lvm);
@@ -131,7 +126,7 @@ namespace mvclms.Controllers
             int id = _courseManager.CreateLecture(lecture);
             return RedirectToAction("ShowLecture", "Course", new {id = id});
         }
-        
+
 
         [HttpGet]
         public IActionResult UpdateLecture(int id)
@@ -142,7 +137,7 @@ namespace mvclms.Controllers
                 lecture.CourseId,
                 true))
                 return Ok("you don't have permissions to update this lecture !!!");
-
+            AddNavigation("Back", "Course", "ShowCourse", id);
             UpdateLectureViewModel ulvm = new UpdateLectureViewModel
             {
                 Title = lecture.Title,
@@ -151,7 +146,7 @@ namespace mvclms.Controllers
                 LectureId = id,
                 AttachmentDesc = lecture.Attachment.Description
             };
-            
+
             return View(ulvm);
         }
 
@@ -163,9 +158,9 @@ namespace mvclms.Controllers
                 lecture.CourseId,
                 true))
                 return Ok("you don't have permissions to update this lecture !!!");
-            
+
             _courseManager.UpdateLecture(lecture);
-            
+
             return RedirectToAction("ShowLecture", "Course", new {id = lecture.LectureId});
         }
 
@@ -205,7 +200,7 @@ namespace mvclms.Controllers
                 return Ok("You don't have permissions to visit this page !!!");
             return View(_courseManager.GetStudentCourses(_userManager.GetUser(User).Id));
         }
-        
+
         public IActionResult TeacherCourses()
         {
             addUserNavbar();

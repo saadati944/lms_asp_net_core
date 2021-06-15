@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -58,18 +57,18 @@ namespace mvclms.Services
 
             ViewBag.navbar.Add(new NavbarButton
             {
+                Title = "Logout",
+                Controller = "Users",
+                Action = "Logout"
+            });
+            ViewBag.navbar.Add(new NavbarButton
+            {
                 Title = "Profile",
                 Controller = "Users",
                 Action = "Profile",
                 Id = GetUser(cp).Id
             });
 
-            ViewBag.navbar.Add(new NavbarButton
-            {
-                Title = "Logout",
-                Controller = "Users",
-                Action = "Logout"
-            });
         }
 
         public IdentityResult CreateUser(PersonViewModel person)
