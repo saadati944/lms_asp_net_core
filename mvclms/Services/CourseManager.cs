@@ -63,9 +63,12 @@ namespace mvclms.Services
 
         public Course GetCourse(int id)
         {
-            return _dbContext.Courses.Where(x => x.Id == id).Include(x => x.Lectures).ThenInclude(x => x.Attachment)
-                .Include(x => x.StudentCourses)
-                .ThenInclude(x => x.Student).Include(x => x.Teacher).FirstOrDefault();
+            return _dbContext.Courses.Where(x => x.Id == id)
+                .Include(x => x.Lectures).ThenInclude(x => x.Attachment)
+                .Include(x => x.StudentCourses).ThenInclude(x => x.Student)
+                .Include(x=>x.Category)
+                .Include(x => x.Teacher)
+                .FirstOrDefault();
         }
 
         public List<Lecture> GetLectures(Course course)
@@ -96,6 +99,22 @@ namespace mvclms.Services
             _dbContext.Add(c);
             _dbContext.SaveChanges();
             return c.Id;
+        }
+        
+        public void UpdateCourse(CourseViewModel updatedcourse)
+        {
+            var course = GetCourse(updatedcourse.Id);
+
+            course.Name = updatedcourse.Name;
+            course.Description = updatedcourse.Description;
+            course.Price = updatedcourse.Price;
+            course.StartDate = updatedcourse.StartDate;
+            course.EndDate = updatedcourse.EndDate;
+
+            if (course.Category.Name != updatedcourse.Category)
+                course.Category = GetCategory(updatedcourse.Category);
+            
+            _dbContext.SaveChanges();
         }
 
         private Category GetCategory(string cat)

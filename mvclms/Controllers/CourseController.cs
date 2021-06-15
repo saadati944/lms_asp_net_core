@@ -62,7 +62,10 @@ namespace mvclms.Controllers
                 if (!ViewBag.IsCheckedOut && _userManager.isStudent)
                     AddNavigation("CheckOut", "Course", "Course", id);
                 else if (ViewBag.IsCheckedOut && _userManager.isTeacher)
+                {
                     AddNavigation("Add Lecture", "Course", "CreateLecture", id);
+                    AddNavigation("Edit", "Course", "UpdateCourse", id);
+                }
             }
 
             return View(_courseManager.GetCourse(id));
@@ -79,6 +82,8 @@ namespace mvclms.Controllers
 
             if (_userManager.isTeacher)
                 AddNavigation("Edit", "Course", "UpdateLecture", id);
+            
+            AddNavigation("Back", "Course", "ShowCourse", lecture.CourseId);
             return View(lecture);
         }
 
@@ -137,7 +142,7 @@ namespace mvclms.Controllers
                 lecture.CourseId,
                 true))
                 return Ok("you don't have permissions to update this lecture !!!");
-            AddNavigation("Back", "Course", "ShowCourse", id);
+            AddNavigation("Back", "Course", "ShowLecture", id);
             UpdateLectureViewModel ulvm = new UpdateLectureViewModel
             {
                 Title = lecture.Title,
@@ -162,6 +167,56 @@ namespace mvclms.Controllers
             _courseManager.UpdateLecture(lecture);
 
             return RedirectToAction("ShowLecture", "Course", new {id = lecture.LectureId});
+        }
+        
+        [HttpGet]
+        public IActionResult UpdateCourse(int id)
+        {
+            addUserNavbar();
+            if (_userManager.GetUser(User) is null || !_userManager.isTeacher)
+                return Ok("you don't have permissions to update this course !!!");
+            
+            var course = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id).FirstOrDefault(x => x.Id == id);
+            
+            if(course is null)
+                return Ok("you don't have permissions to update this course !!!");
+
+            CourseViewModel cvm = new CourseViewModel
+            {
+                Id = id,
+                Name = course.Name,
+                Category = course.Category.Name,
+                Description = course.Description,
+                Price = course.Price,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate
+            };
+            
+            AddNavigation("Back", "Course", "ShowCourse", id);
+            return View(cvm);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateCourse(CourseViewModel cvm)
+        {
+            // if (_userManager.GetUser(User) is null || !_userManager.isTeacher || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, cvm.Id, true))
+            //     return Ok("you don't have permissions to update this course !!!");
+
+            if (_userManager.GetUser(User) is null)
+                return Ok("you don't have permissions to update this course !!!");
+            if (!_userManager.isTeacher)
+                return Ok("you don't have permissions to update this course !!!");
+            if (!_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id, cvm.Id, true))
+                return Ok("you don't have permissions to update this course !!!");
+
+            // var course = _courseManager.GetTeacherCourses(_userManager.GetUser(User).Id).FirstOrDefault(x => x.Id != cvm.Id);
+            //
+            // if(course is null)
+            //     return Ok("you don't have permissions to update this course !!!");
+
+            _courseManager.UpdateCourse(cvm);
+
+            return RedirectToAction("ShowCourse", "Course", new {id = cvm.Id});
         }
 
         [HttpGet]

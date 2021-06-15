@@ -23,18 +23,10 @@
                 <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
                     @x.Course.Name
                 </a></td>
-                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
-                    @x.Course.Category.Name
-                </a></td>
-                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
-                    @x.Course.Teacher.FullName
-                </a></td>
-                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
-                    @x.Course.StartDate.ToLongDateString()  @x.Course.StartDate.ToLongTimeString()
-                </a></td>
-                <td><a asp-action="ShowCourse" asp-controller="Course" asp-route-id="@x.CourseId">
-                    @x.Course.EndDate.ToLongDateString()  @x.Course.EndDate.ToLongTimeString()
-                </a></td>
+                <td>@x.Course.Category.Name</td>
+                <td>@x.Course.Teacher.FullName</td>
+                <td>@x.Course.StartDate.ToLongDateString()  @x.Course.StartDate.ToLongTimeString()</td>
+                <td>@x.Course.EndDate.ToLongDateString()  @x.Course.EndDate.ToLongTimeString()</td>
             </tr>
         }
     </table>

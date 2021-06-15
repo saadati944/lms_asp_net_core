@@ -90,7 +90,7 @@ namespace mvclms.Controllers
                     Action = "CreateCourse"
                 });
             }
-            else
+            else if(_userManager.isStudent)
             {
                 ViewBag.navbar.Add(new NavbarButton
                 {
