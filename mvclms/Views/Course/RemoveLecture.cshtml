@@ -13,6 +13,7 @@
             <p>@ViewBag.lecture.Attachment.Description</p>
             <p>Author : @ViewBag.lecture.Course.Teacher.FullName</p>
         
+        <input asp-for="Id">
         <input asp-for="Sure">
         <a class="btn btn-primary" asp-controller="Course" asp-action="RemoveLecture" asp-route-id="@ViewBag.lecture.Id">cancel</a>
         <button type="submit" class="btn btn-danger">Remove</button>

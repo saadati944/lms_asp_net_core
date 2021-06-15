@@ -186,6 +186,15 @@ namespace mvclms.Services
             _dbContext.SaveChanges();
         }
         
+        public void RemoveCourse(Course course)
+        {
+            while(course.Lectures.Count > 0)
+                RemoveLecture(course.Lectures[0]);
+
+            _dbContext.Remove(course);
+            _dbContext.SaveChanges();
+        }
+        
 
         /// <summary>
         /// save a file into the server (in the wwwroot/UploadPath) then return it's path.
@@ -224,11 +233,6 @@ namespace mvclms.Services
         {
             student.StudentCourses.Add(new StudentCourse {Course = c, Student = student});
             _dbContext.SaveChanges();
-        }
-
-        public int GetLectureCourse(int lectureId)
-        {
-            return _dbContext.Lectures.FirstOrDefault(x => x.Id == lectureId).CourseId;
         }
     }
 }

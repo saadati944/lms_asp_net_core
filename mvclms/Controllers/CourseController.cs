@@ -65,6 +65,7 @@ namespace mvclms.Controllers
                 {
                     AddNavigation("Add Lecture", "Course", "CreateLecture", id);
                     AddNavigation("Edit", "Course", "UpdateCourse", id);
+                    AddNavigation("Remove", "Course", "RemoveCourse", id);
                 }
             }
 
@@ -190,13 +191,6 @@ namespace mvclms.Controllers
         [HttpPost]
         public IActionResult RemoveLecture(ConfirmOperationViewModel confirm)
         {
-            // int courseid = _courseManager.GetLectureCourse(confirm.Id);
-            // if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
-            //     courseid,
-            //     true))
-            //     return Ok("you don't have permissions to update this lecture !!!");
-            // _courseManager.RemoveLecture(confirm.Id);
-            // return RedirectToAction("ShowCourse", "Course", new {id = courseid});
             var lecture = _courseManager.GetLecture(confirm.Id);
             if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
                 lecture.CourseId,
@@ -204,6 +198,35 @@ namespace mvclms.Controllers
                 return Ok("you don't have permissions to update this lecture !!!");
             _courseManager.RemoveLecture(lecture);
             return RedirectToAction("ShowCourse", "Course", new {id = lecture.CourseId});
+        }
+        [HttpGet]
+        public IActionResult RemoveCourse(int id)
+        {
+            addUserNavbar();
+            var course = _courseManager.GetCourse(id);
+            if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+                id,
+                true))
+                return Ok("you don't have permissions to remove this course !!!");
+            
+            AddNavigation("Back", "Course", "ShowCourse", id);
+            
+            ViewBag.course = course;
+            return View(new ConfirmOperationViewModel{Id = id});
+        }
+        
+        [HttpPost]
+        public IActionResult RemoveCourse(ConfirmOperationViewModel confirm)
+        {
+            var course = _courseManager.GetCourse(confirm.Id);
+            if (_userManager.GetUser(User) is null || !_courseManager.IsCourseCheckedOut(_userManager.GetUser(User).Id,
+                course.Id,
+                true))
+                return Ok("you don't have permissions to update this lecture !!!");
+            
+            _courseManager.RemoveCourse(course);
+            
+            return RedirectToAction("Profile", "Users", new {id = _userManager.GetUser(User).Id});
         }
 
         [HttpGet]
